@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class StringCalculatorShould {
      
-      Calculator.StringCalculator stringCalculator;
+      calculator.StringCalculator stringCalculator;
      //Test case to check string returns 0 on empty string
        @Test
         public void TestAddWithEmptyStringReturnsZero()
