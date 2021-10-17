@@ -1,75 +1,92 @@
 package calculator;
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class StringCalculatorShould {
      
-      calculator.StringCalculator stringCalculator;
-     //Test case to check string returns 0 on empty string
-       @Test
-        public void TestAddWithEmptyStringReturnsZero()
-        {
-            string numbers = string.Empty;
-            int result = stringCalculator.Add(numbers);
-            Assert.AreEqual(0,
-                            result);
-        }
-   //test case to check String returns addition of only one number present in string
-        @Test
-        public void TestAddWithSingleNumberInStringReturnsTheNumber()
-        {
-            string numbers = "1";
-            int result = stringCalculator.Add(numbers);
-            Assert.AreEqual(1,
-                            result);
-        }
-
-    //Test case to check String returns addition of two numbers 
-       @TestCase("1,2,3,4,5,6,7,8,9,10")
-        public void TestAddWithMultipleNumbersInStringReturnsTheTotal(string inputNumbers)
-        {
-            int result = stringCalculator.Add(inputNumbers);
-            Assert.AreEqual(55,
-                            result);
-        }
-    //Test case to check that add method returns total if the string contains new lines and coma seperated values
-       @TestCase("1,2,3,4,5\n6,7,8\n9,10")
-        public void TestAddWithMultipleNumbersInStringSplitWithNewLinesAndCommasReturnsTheTotal(string inputNumbers)
-        {
-            int result = stringCalculator.Add(inputNumbers);
-            Assert.AreEqual(55,
-                            result);
-        }
-
-        @TestCase("1,2,3,4,\n6,7,\n9,10")
-        public void TestAddWithMultipleNumbersInStringReturnZeroForEmptyNumbers(string inputNumbers)
-        {
-            int result = stringCalculator.Add(inputNumbers);
-            Assert.AreEqual(42,
-                            result);
-        }
-     //Test to check using different delimeter
-        @TestCase("//;\n1;2")
-        public void TestAddWithMultipleNumbersInStringUsingDifferentDelimeter(string inputNumbers)
-        {
-            int result = stringCalculator.Add(inputNumbers);
-            Assert.AreEqual(3,
-                            result);
-        }
-     //test case to check method returns exception on negative numbers
-        @TestCase("//;\n1;-2")
-        [ExpectedException(typeof (ArgumentException))]
-        public void TestAddWithNegativeNumbersWillThrowException(string inputNumbers)
-        {
-            int result = stringCalculator.Add(inputNumbers);
-            Assert.AreEqual(3,
-                            result);
-        }
-    //test case to check if no is greater that 1000 then number is ignored
-       @Test
-       public final void whenOneOrMoreNumbersAreGreaterThan1000IsUsedThenItIsNotIncludedInSum() {
-        Assert.assertEquals(3+1000+6, StringCalculator8.add("3,1000,1001,6,1234"));
-}
+      
+     //Test case to check string returns 0 on empty string or  1 or 2 numbers separated by comma (,).
+     
+       @Test(expected = RuntimeException.class)
+    public final void whenMoreThan2NumbersAreUsedThenExceptionIsThrown()
+    {
+        StringCalculator.add("1,2,3");
+    }
+     
+    @Test
+    public final void when2NumbersAreUsedThenNoExceptionIsThrown()
+    {
+        StringCalculator.add("1,2");
+        Assert.assertTrue(true);
+    }
+     
+    @Test(expected = RuntimeException.class)
+    public final void whenNonNumberIsUsedThenExceptionIsThrown()
+    {
+        StringCalculator.add("1,X");
+    }
+     
+     //when empty string then return value must be zero
+     
+     @Test
+    public final void whenEmptyStringIsUsedThenReturnValueIs0()
+    {
+       Assert.assertEquals(0, StringCalculator.add(""));
+    }
+     
+     //Add method to handle an unknown amount of numbers
+     
+     @Test
+    public final void whenAnyNumberOfNumbersIsUsedThenReturnValuesAreTheirSums() 
+    {
+        Assert.assertEquals(3+6+15+18+46+33, StringCalculator.add("3,6,15,18,46,33"));
+    }
+     
+     //Allow the Add method to handle new lines between numbers (instead of commas).
+     
+     @Test
+     public final void whenNewLineIsUsedBetweenNumbersThenReturnValuesAreTheirSums()
+     {
+         Assert.assertEquals(3+6+15, StringCalculator.add("3,6n15"));
+     }
+    
+     // Test case to Support different delimiters
+    
+     @Test
+     public final void whenDelimiterIsSpecifiedThenItIsUsedToSeparateNumbers()
+     {
+          Assert.assertEquals(3+6+15, StringCalculator.add("//;n3;6;15"));
+     }
+     
+     // Test case to check does negative numbers throws an exception or not
+     
+     @Test(expected = RuntimeException.class)
+     public final void whenNegativeNumberIsUsedThenRuntimeExceptionIsThrown()
+     {
+           StringCalculator.add("3,-6,15,18,46,33");
+     }
+     
+     @Test
+     public final void whenNegativeNumbersAreUsedThenRuntimeExceptionIsThrown() 
+     {
+           RuntimeException exception = null;
+           try {
+                 StringCalculator.add("3,-6,15,-18,46,33");
+               } 
+           catch (RuntimeException e) 
+                {
+                 exception = e;
+                }
+            Assert.assertNotNull(exception);
+            Assert.assertEquals("Negatives not allowed: [-6, -18]", exception.getMessage());
+       }
+     
+     //test case to check number bigger than 1000 should be ignored
+     
+     @Test
+    public final void whenOneOrMoreNumbersAreGreaterThan1000IsUsedThenItIsNotIncludedInSum() 
+    {
+         Assert.assertEquals(3+1000+6, StringCalculator8.add("3,1000,1001,6,1234"));
+     }
 }
